@@ -1,0 +1,11 @@
+{
+  "name": "remote_config",
+  "description": "",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.4.1"
+  }
+}
