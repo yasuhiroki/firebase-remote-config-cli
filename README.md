@@ -2,7 +2,7 @@ Firebase Remote Config を管理する
 
 # Requirement
 
-- Node.js v16.x 以上
+- Node.js v18.x 以上
 
 # Setup
 
