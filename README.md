@@ -18,13 +18,31 @@ TBD
 
 # Usage
 
-```bash
-$ env FIREBASE_CREDENTIALS=Setup手順2で取得したJSONファイルのパス index.mjs
-```
+## Common options
 
-DEBUG (only print log, not publish)
+- `--json` (required) firebase credentials json file path
+- `--debug` print debug log
+- `--dryrun` do not run writing and publishing
+
+## Commands
+
+- checkout
+    - Checkout parameters to local file from Firebase.
+- validate
+    - Validate local file parameters.
+- diff
+    - Show diff parameters between local file and Firebase.
+- publish
+    - Publish parameters to Firebase.
+    - If use `-f` option, skip confirmation.
+
+
+## Examples
 
 ```bash
-# set DEBUG environment variable
-$ env DEBUG=true FIREBASE_CREDENTIALS=Setup手順2で取得したJSONファイルのパス index.mjs
+node index.mjs checkout --json FIREBASE_CREDENTIALS_JSON_PATH
+node index.mjs validate --json FIREBASE_CREDENTIALS_JSON_PATH
+node index.mjs diff --json FIREBASE_CREDENTIALS_JSON_PATH
+node index.mjs publish --json FIREBASE_CREDENTIALS_JSON_PATH
+node index.mjs publish -f --json FIREBASE_CREDENTIALS_JSON_PATH
 ```
