@@ -7,6 +7,8 @@ import { createInterface } from 'node:readline/promises';
 import { cert, initializeApp } from 'firebase-admin/app';
 import { getRemoteConfig } from 'firebase-admin/remote-config';
 
+import { diffJson } from 'diff';
+
 const help = `example:
   node index.mjs checkout --json FIREBASE_CREDENTIALS_JSON_PATH
   node index.mjs validate --json FIREBASE_CREDENTIALS_JSON_PATH
@@ -50,6 +52,7 @@ const { values, positionals } = parse()
 const command = {
   checkout: false,
   validate: false,
+  diff: false,
   publish: false,
 };
 if (positionals.length != 1) {
@@ -64,6 +67,9 @@ if (positionals.length != 1) {
       break;
     case "validate":
       command.validate = true;
+      break;
+    case "diff":
+      command.diff = true;
       break;
     case "publish":
       command.validate = true;
@@ -145,6 +151,7 @@ const newTemplate = {
   parameters: {},
   parameterGroups: {},
   conditions: template.conditions,
+  version: template.version,
 }
 
 const files = readdirSync(parametersDir);
@@ -174,12 +181,37 @@ for (const group of groups) {
   }
 }
 
+// Validate new template
 if (command.validate) {
   try {
     remoteConfig.validateTemplate(newTemplate)
   } catch (error) {
     console.error(error);
     process.exit(1);
+  }
+}
+
+// Show diff
+if (command.diff) {
+  if (values.debug) {
+    console.log("--- show diff ---------");
+  }
+  const results = diffJson(template, newTemplate);
+  if (results.filter((result) => result.added || result.removed) == 0) {
+    console.log("no difference");
+  } else {
+    for (const result of results) {
+      let prefix = " ";
+      if (result.added) {
+        prefix = "+";
+      } else if (result.removed) {
+        prefix = "-";
+      }
+      console.log(result.value.split("\n").map((s) => s.replace(/^/, prefix)).join("\n"));
+    }
+  }
+  if (values.debug) {
+    console.log("------------------------");
   }
 }
 

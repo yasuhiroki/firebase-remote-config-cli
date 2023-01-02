@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "diff": "^5.1.0",
     "firebase-admin": "^11.4.1"
   }
 }
