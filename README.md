@@ -35,6 +35,8 @@ TBD
 - publish
     - Publish parameters to Firebase.
     - If use `-f` option, skip confirmation.
+- download
+    - Download default files to `default.xml` and `default.plist` .
 
 
 ## Examples
@@ -45,4 +47,5 @@ node index.mjs validate --json FIREBASE_CREDENTIALS_JSON_PATH
 node index.mjs diff --json FIREBASE_CREDENTIALS_JSON_PATH
 node index.mjs publish --json FIREBASE_CREDENTIALS_JSON_PATH
 node index.mjs publish -f --json FIREBASE_CREDENTIALS_JSON_PATH
+node index.mjs download --json FIREBASE_CREDENTIALS_JSON_PATH
 ```

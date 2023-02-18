@@ -14,6 +14,7 @@ const help = `example:
   node index.mjs validate --json FIREBASE_CREDENTIALS_JSON_PATH
   node index.mjs publish --json FIREBASE_CREDENTIALS_JSON_PATH
   node index.mjs publish --dryrun --json FIREBASE_CREDENTIALS_JSON_PATH
+  node index.mjs download --json FIREBASE_CREDENTIALS_JSON_PATH
 `;
 
 function parse() {
@@ -54,6 +55,7 @@ const command = {
   validate: false,
   diff: false,
   publish: false,
+  download: false,
 };
 if (positionals.length != 1) {
   console.error(`Error: Required one command`);
@@ -74,6 +76,9 @@ if (positionals.length != 1) {
     case "publish":
       command.validate = true;
       command.publish = true;
+      break;
+    case "download":
+      command.download = true;
       break;
     default:
       console.error(`Error: Unknown command '${positionals[0]}'`);
@@ -239,5 +244,42 @@ if (command.publish && !values.dryrun) {
       console.error(error);
       process.exit(1);
     }
+  }
+}
+
+// Download defaults XML and plit files
+if (command.download) {
+  if (values.debug) {
+    console.log("[Debug] download default file");
+  }
+
+  if (!values.dryrun) {
+    await remoteConfig.client.getUrl().then((url) => {
+        const request = {
+          method: 'GET',
+          url: `${url}/remoteConfig:downloadDefaults?format=XML`,
+        };
+        return remoteConfig.client.httpClient.send(request);
+      }).then((resp) => {
+        const file = "default.xml"
+        return writeFile(file, resp.text);
+      }).catch((err) => {
+        console.error(err);
+        process.exit(1);
+      });
+
+    await remoteConfig.client.getUrl().then((url) => {
+        const request = {
+          method: 'GET',
+          url: `${url}/remoteConfig:downloadDefaults?format=PLIST`,
+        };
+        return remoteConfig.client.httpClient.send(request);
+      }).then((resp) => {
+        const file = "default.plist"
+        return writeFile(file, resp.text);
+      }).catch((err) => {
+        console.error(err);
+        process.exit(1);
+      });
   }
 }
