@@ -6,10 +6,16 @@ Firebase Remote Config を管理する
 
 # Setup
 
-## 1. install node modules
+## 1. install
 
-```bash
-npm install
+Add dependencies this repository url.
+
+```json
+{
+    "dependencies": {
+        "firebase-remote-config-cli": "git@github.com:yasuhiroki/firebase-remote-config-cli.git"
+    }
+}
 ```
 
 ## 2. get firebase service account credential json file
