@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { existsSync, readdirSync } from 'node:fs';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { deserialize, serialize } from 'node:v8';

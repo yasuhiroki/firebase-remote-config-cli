@@ -2,6 +2,9 @@
   "name": "firebase-remote-config-cli",
   "description": "Management firebase remote conig CLI tool",
   "main": "index.mjs",
+  "bin": {
+    "frc": "index.mjs"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

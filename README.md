@@ -42,10 +42,10 @@ TBD
 ## Examples
 
 ```bash
-node index.mjs checkout --json FIREBASE_CREDENTIALS_JSON_PATH
-node index.mjs validate --json FIREBASE_CREDENTIALS_JSON_PATH
-node index.mjs diff --json FIREBASE_CREDENTIALS_JSON_PATH
-node index.mjs publish --json FIREBASE_CREDENTIALS_JSON_PATH
-node index.mjs publish -f --json FIREBASE_CREDENTIALS_JSON_PATH
-node index.mjs download --json FIREBASE_CREDENTIALS_JSON_PATH
+frc checkout --json FIREBASE_CREDENTIALS_JSON_PATH
+frc validate --json FIREBASE_CREDENTIALS_JSON_PATH
+frc diff --json FIREBASE_CREDENTIALS_JSON_PATH
+frc publish --json FIREBASE_CREDENTIALS_JSON_PATH
+frc publish -f --json FIREBASE_CREDENTIALS_JSON_PATH
+frc download --json FIREBASE_CREDENTIALS_JSON_PATH
 ```
