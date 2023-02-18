@@ -38,6 +38,10 @@ function parse() {
       type: 'boolean',
       default: false,
     },
+    path: {
+      type: 'string',
+      default: "./",
+    }
   };
 
   try {
@@ -97,6 +101,17 @@ if (!credPath) {
   process.exit(1);
 }
 
+if (values.path == "") {
+  values.path = "./";
+}
+if (!existsSync(values.path)) {
+  console.error(`Error: directory ${values.path} is not exist`);
+  process.exit(1);
+}
+if (values.path.slice(-1) !== "/") {
+  values.path = values.path + "/";
+}
+
 initializeApp({ credential: cert(credPath) });
 
 const remoteConfig = getRemoteConfig();
@@ -124,8 +139,8 @@ const makeFiles = async (dir, parameters) => {
     }
 };
 
-const parametersDir = './parameters';
-const parameterGroupsDir = './parameterGroups';
+const parametersDir = `${values.path}parameters`;
+const parameterGroupsDir = `${values.path}parameterGroups`;
 if (command.checkout) {
   if (!existsSync(parametersDir)) {
       try {
@@ -263,7 +278,7 @@ if (command.download) {
         };
         return remoteConfig.client.httpClient.send(request);
       }).then((resp) => {
-        const file = "default.xml"
+        const file = `${values.path}default.xml`
         return writeFile(file, resp.text);
       }).catch((err) => {
         console.error(err);
@@ -277,7 +292,7 @@ if (command.download) {
         };
         return remoteConfig.client.httpClient.send(request);
       }).then((resp) => {
-        const file = "default.plist"
+        const file = `${values.path}default.plist`
         return writeFile(file, resp.text);
       }).catch((err) => {
         console.error(err);

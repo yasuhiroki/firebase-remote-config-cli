@@ -27,6 +27,7 @@ TBD
 ## Common options
 
 - `--json` (required) firebase credentials json file path
+- `--path` root path of parameters directory (default: "./")
 - `--debug` print debug log
 - `--dryrun` do not run writing and publishing
 
