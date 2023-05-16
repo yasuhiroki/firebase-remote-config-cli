@@ -150,7 +150,7 @@ if (command.checkout) {
         process.exit(1);
       }
   }
-  makeFiles(parametersDir, template.parameters);
+  await makeFiles(parametersDir, template.parameters);
 
   for (const [key, parameterGroup] of Object.entries(template.parameterGroups)) {
     const groupDir = `${parameterGroupsDir}/${key}`;
@@ -163,7 +163,7 @@ if (command.checkout) {
       }
     }
 
-    makeFiles(groupDir, template.parameterGroups[key].parameters);
+    await makeFiles(groupDir, template.parameterGroups[key].parameters);
   }
 }
 
