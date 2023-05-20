@@ -1,7 +1,11 @@
 {
-  "name": "firebase-remote-config-cli",
+  "name": "@yasuhiroki/firebase-remote-config-cli",
   "version": "0.0.1",
   "description": "Management firebase remote conig CLI tool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yasuhiroki/firebase-remote-config-cli"
+  },
   "main": "index.mjs",
   "bin": {
     "frc": "index.mjs"
