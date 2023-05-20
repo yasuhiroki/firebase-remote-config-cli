@@ -10,6 +10,7 @@ import { cert, initializeApp } from 'firebase-admin/app';
 import { getRemoteConfig } from 'firebase-admin/remote-config';
 
 import { diffJson } from 'diff';
+import YAML from 'js-yaml'
 
 const help = `example:
   node index.mjs checkout --json FIREBASE_CREDENTIALS_JSON_PATH
@@ -41,6 +42,10 @@ function parse() {
     path: {
       type: 'string',
       default: "./",
+    },
+    format: {
+      type: 'string',
+      default: "yaml",
     }
   };
 
@@ -130,7 +135,23 @@ const makeFiles = async (dir, parameters) => {
       }
       if (!values.dryrun) {
         try {
-          await writeFile(file, JSON.stringify(parameter, null, 2));
+          if (values.format == "yaml") {
+            if (parameter["valueType"] === "JSON") {
+              if (parameter["defaultValue"]["value"]) {
+                parameter["defaultValue"]["value"] = JSON.stringify(JSON.parse(parameter["defaultValue"]["value"]), null, 2);
+              }
+              if (parameter["conditionalValues"]) {
+                for (const [key, value] of Object.entries(parameter["conditionalValues"])) {
+                  if (parameter["conditionalValues"][key]["value"]) {
+                    parameter["conditionalValues"][key]["value"] = JSON.stringify(JSON.parse(value["value"]), null, 2);
+                  }
+                }
+              }
+            }
+            await writeFile(file, YAML.dump(parameter));
+          } else {
+            await writeFile(file, JSON.stringify(parameter, null, 2));
+          }
         } catch (error) {
           console.error(error)
           process.exit(1);
@@ -180,7 +201,7 @@ const files = readdirSync(parametersDir);
 for (const file of files) {
   try {
     const body = await readFile(`${parametersDir}/${file}`);
-    newTemplate.parameters[file] = JSON.parse(body.toString());
+    newTemplate.parameters[file] = YAML.load(body.toString(), { json: true });
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -195,7 +216,7 @@ for (const group of groups) {
   for (const file of files) {
     try {
       const body = await readFile(`${parameterGroupsDir}/${group}/${file}`);
-      newTemplate.parameterGroups[group].parameters[file] = JSON.parse(body.toString());
+      newTemplate.parameterGroups[group].parameters[file] = YAML.load(body.toString(), { json: true });
     } catch (error) {
       console.error(error);
       process.exit(1);
