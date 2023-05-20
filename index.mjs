@@ -18,6 +18,7 @@ const help = `example:
   node index.mjs publish --json FIREBASE_CREDENTIALS_JSON_PATH
   node index.mjs publish --dryrun --json FIREBASE_CREDENTIALS_JSON_PATH
   node index.mjs download --json FIREBASE_CREDENTIALS_JSON_PATH
+  node index.mjs diff --json FIREBASE_CREDENTIALS_JSON_PATH
 `;
 
 function parse() {

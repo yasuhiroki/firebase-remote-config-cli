@@ -30,6 +30,7 @@ TBD
 - `--path` root path of parameters directory (default: "./")
 - `--debug` print debug log
 - `--dryrun` do not run writing and publishing
+- `--format` checkout file format "yaml" or "json" (default: "yaml")
 
 ## Commands
 
