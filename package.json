@@ -1,5 +1,6 @@
 {
   "name": "firebase-remote-config-cli",
+  "version": "0.0.1",
   "description": "Management firebase remote conig CLI tool",
   "main": "index.mjs",
   "bin": {
