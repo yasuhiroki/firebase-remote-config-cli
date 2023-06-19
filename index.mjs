@@ -127,6 +127,23 @@ if (values.debug) {
   console.log(JSON.stringify(template, null, 2));
 }
 
+const makeReadableJsonValue = (parameter) => {
+  if (parameter["valueType"] === "JSON") {
+    if (parameter["defaultValue"]["value"]) {
+      parameter["defaultValue"]["value"] = JSON.stringify(JSON.parse(parameter["defaultValue"]["value"]), null, 2);
+    }
+    if (parameter["conditionalValues"]) {
+      for (const [key, value] of Object.entries(parameter["conditionalValues"])) {
+        if (parameter["conditionalValues"][key]["value"]) {
+          parameter["conditionalValues"][key]["value"] = JSON.stringify(JSON.parse(value["value"]), null, 2);
+        }
+      }
+    }
+  }
+
+  return parameter;
+}
+
 // Output JSON at first
 const makeFiles = async (dir, parameters) => {
     for (const [key, parameter] of Object.entries(parameters)) {
@@ -137,18 +154,7 @@ const makeFiles = async (dir, parameters) => {
       if (!values.dryrun) {
         try {
           if (values.format == "yaml") {
-            if (parameter["valueType"] === "JSON") {
-              if (parameter["defaultValue"]["value"]) {
-                parameter["defaultValue"]["value"] = JSON.stringify(JSON.parse(parameter["defaultValue"]["value"]), null, 2);
-              }
-              if (parameter["conditionalValues"]) {
-                for (const [key, value] of Object.entries(parameter["conditionalValues"])) {
-                  if (parameter["conditionalValues"][key]["value"]) {
-                    parameter["conditionalValues"][key]["value"] = JSON.stringify(JSON.parse(value["value"]), null, 2);
-                  }
-                }
-              }
-            }
+            makeReadableJsonValue(parameter);
             await writeFile(file, YAML.dump(parameter));
           } else {
             await writeFile(file, JSON.stringify(parameter, null, 2));
@@ -198,11 +204,32 @@ const newTemplate = {
   version: template.version,
 }
 
+const makeMinifyJsonValue = (parameter) => {
+  if (parameter["valueType"] === "JSON") {
+    if (parameter["defaultValue"]["value"]) {
+      parameter["defaultValue"]["value"] = JSON.stringify(JSON.parse(parameter["defaultValue"]["value"]));
+    }
+    if (parameter["conditionalValues"]) {
+      for (const [key, value] of Object.entries(parameter["conditionalValues"])) {
+        if (parameter["conditionalValues"][key]["value"]) {
+          parameter["conditionalValues"][key]["value"] = JSON.stringify(JSON.parse(value["value"]));
+        }
+      }
+    }
+  }
+
+  return parameter;
+}
+
 const files = readdirSync(parametersDir);
 for (const file of files) {
   try {
     const body = await readFile(`${parametersDir}/${file}`);
-    newTemplate.parameters[file] = YAML.load(body.toString(), { json: true });
+    let parameter = YAML.load(body.toString(), { json: true });
+    if (values.format == "yaml") {
+      parameter = makeMinifyJsonValue(parameter);
+    }
+    newTemplate.parameters[file] = parameter;
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -217,7 +244,11 @@ for (const group of groups) {
   for (const file of files) {
     try {
       const body = await readFile(`${parameterGroupsDir}/${group}/${file}`);
-      newTemplate.parameterGroups[group].parameters[file] = YAML.load(body.toString(), { json: true });
+      let parameter = YAML.load(body.toString(), { json: true });
+      if (values.format == "yaml") {
+        parameter = makeMinifyJsonValue(parameter);
+      }
+      newTemplate.parameterGroups[group].parameters[file] = parameter;
     } catch (error) {
       console.error(error);
       process.exit(1);
@@ -240,7 +271,8 @@ if (command.diff) {
   if (values.debug) {
     console.log("--- show diff ---------");
   }
-  const results = diffJson(template, newTemplate);
+
+  let results = diffJson(template, newTemplate);
   if (results.filter((result) => result.added || result.removed) == 0) {
     console.log("no difference");
   } else {
