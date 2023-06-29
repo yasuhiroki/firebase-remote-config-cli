@@ -11,7 +11,7 @@ This tool enables synchronization of data between a local file and Firebase Remo
 
 # Requirement
 
-- Node.js v18.x 以上
+- Node.js v18.x above
 
 # Getting Started
 
